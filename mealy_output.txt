@@ -1,0 +1,8 @@
+Input for this Mealy Machine : 101010
+Current input : 	 Cur-State 	 New State 	 Output 
+	 1 	 	   0	  ----->	1  	  1
+	 0 	 	   1	  ----->	1  	  1
+	 1 	 	   1	  ----->	0  	  0
+	 0 	 	   0	  ----->	0  	  1
+	 1 	 	   0	  ----->	1  	  1
+	 0 	 	   1	  ----->	1  	  1

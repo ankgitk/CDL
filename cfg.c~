@@ -1,0 +1,136 @@
+#include<stdio.h>
+#include<string.h>
+
+char code[20][20];
+int cc=0;
+int leaders[20];
+int lc=0;
+int cfg[20][20];
+struct 
+{
+	int start,end;
+}block[10];
+int bc=0;
+
+void fromFile()
+{
+	FILE *ptr=fopen("tac.txt","r");
+	int i;
+	int j=0;
+	char c;
+	while(!feof(ptr))
+	{
+		fscanf(ptr,"%c",&c);
+		if(c=='\n')
+		{
+			code[cc][j]=0;
+			j=0;
+			cc++;
+		}
+		else
+		{
+			code[cc][j++]=c;
+		}
+		
+		
+	}
+	cc--;
+	fclose(ptr);
+	ptr=fopen("leaders.txt","r");
+	while(!feof(ptr))
+	{
+		fscanf(ptr,"%d ",&leaders[lc++]);
+	}
+	fclose(ptr);
+		
+}
+
+void findBlocks()
+{
+	int i;
+	for(i=0;i<lc-1;i++)
+	{
+		block[bc].start=leaders[i];
+		block[bc++].end=leaders[i+1]-1;
+	}
+	block[bc].start=leaders[lc-1];
+	block[bc++].end=cc-1;
+	printf("Blocks are \n==========\n");
+	for(i=0;i<bc;i++)
+	{
+		printf("%d-%d\n",block[i].start,block[i].end);
+	}
+	printf("\n");
+}
+int findTarget(int ln)
+{
+
+	int i=hasGoto(ln);
+	int t=0;
+	for(i=i+5;i<strlen(code[ln]);i++)
+	{
+		t=t*10+code[ln][i]-48;
+	}
+	return t;
+}
+
+int hasGoto(int ln)
+{
+	int i=0;
+	int n=strlen(code[ln]);
+	for(;i<n-4;i++)
+	{
+		if(code[ln][i]=='g'&&code[ln][i+1]=='o'&&code[ln][i+2]=='t'&&code[ln][i+3]=='o')
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+int findTargetBlock(int ln)
+{
+	int i;
+	for(i=0;i<bc;i++)
+	{
+		if(block[i].start<=ln&&ln<=block[i].end)
+			return i;
+	}
+}
+
+void makeCfg()
+{
+	int i,j;
+	//initialize matrix with zero
+	for(i=0;i<bc;i++)
+		for(j=0;j<bc;j++)
+			cfg[i][j]=0;
+	
+	for(i=0;i<bc;i++)
+	{
+		if(hasGoto(block[i].end)>=0)
+		{
+			int tb=findTargetBlock(findTarget(block[i].end));
+			cfg[i][tb]=1;
+		}
+		if(i!=bc-1)
+			cfg[i][i+1]=1;
+		
+	}
+	printf("CFG is \n==========\n");
+	for(i=0;i<bc;i++)
+	{
+		for(j=0;j<bc;j++)
+		{
+			printf("%d ",cfg[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int main()
+{
+	fromFile();
+	findBlocks();
+	makeCfg();
+	return 0;
+}

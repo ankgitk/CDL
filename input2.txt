@@ -1,0 +1,8 @@
+7
+S ST
+S p
+T aA
+T aB
+A b
+B c
+T c
